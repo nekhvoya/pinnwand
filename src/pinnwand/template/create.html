@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<form action="/create" method="post" class="paste-create">
+    <main class="page-create">
+        {% if handler.application.configuration.paste_help %}
+        <section class="paste-help">
+            {% raw handler.application.configuration.paste_help %}
+        </section>
+        {% end %}
+        <input type="hidden" name="_xsrf" value="{{ handler.xsrf_token }}">
+        {% if message %}
+        <div class="quick"><p>{{ message }}</p></div>
+        {% end %}
+
+        {% if paste %}
+            {% for index, file in enumerate(paste.files) %}
+            <section class="file-part">
+                <div class="file-meta">
+                    {% module Template("part/lexer-select.html", selected=file.lexer, lexers=lexers_available) %}
+                    <input name="filename" placeholder="Filename (optional)" {% if file.filename %}value="{{ file.filename }}"{% end %}>
+                </div>
+                <textarea required name="raw" autofocus="true" spellcheck="false" placeholder="Enter code to paste.">{{ file.raw }}</textarea>
+            </section>
+            {% end %}
+        {% else %}
+        {% for index, lexer in enumerate(lexers) %}
+        <section class="file-part">
+            <div class="file-meta">
+                {% module Template("part/lexer-select.html", selected=lexer, lexers=lexers_available) %}
+                <input name="filename" placeholder="Filename (optional)">
+            </div>
+            <textarea required name="raw" autofocus="true" spellcheck="false" placeholder="Enter code to paste."></textarea>
+        </section>
+        {% end %}
+        {% end %}
+        <section class="paste-submit">
+            <button type="submit">Paste!</button>
+            <select name="expiry">
+                {% for expiry in expiries %}
+                <option value="{{ expiry }}">Expiry ({{ expiry }})</option>
+                {% end %}
+            </select>
+            <input type="checkbox" name="long"> Use a longer URI
+        </section>
+        <section class="file-drop" id="file-drop">
+            Drop files&nbsp;<a id="file-upload" class="file-upload" onclick="document.getElementById('file-input').click();">or click here</a>&nbsp;to upload files
+            <input id="file-input" type="file" name="file-input" style="display: none;" multiple/>
+        </section>
+    </main>
+</form>
+<section class="file-template">
+    <div class="file-meta">
+        {% module Template("part/lexer-select.html", selected=lexers[0], lexers=lexers_available) %}
+        <input name="filename" placeholder="Filename (optional)">
+    </div>
+    <textarea required name="raw" autofocus="true" spellcheck="false" placeholder="Enter code to paste."></textarea>
+</section>
+{% end %}

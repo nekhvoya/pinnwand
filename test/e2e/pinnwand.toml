@@ -1,0 +1,16 @@
+database_uri = "sqlite:////tmp/tmp5ija9koy"
+
+[ratelimit.read]
+capacity = 200
+consume = 1
+refill = 10
+
+[ratelimit.create]
+capacity = 200
+consume = 1
+refill = 10
+
+[ratelimit.delete]
+capacity = 200
+consume = 1
+refill = 10

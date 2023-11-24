@@ -1,0 +1,77 @@
+name: Test
+
+on:
+  workflow_call:
+  schedule:
+  # run at 7:00 on the first of every month
+  - cron: '0 7 1 * *'
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11"]
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+
+    - name: Run unit tests
+      run: |
+        pytest --cov=pinnwand test/integration
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.11" ]
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+
+    - name: Install playwright
+      run: playwright install
+
+    - name: Install pinnwand
+      run: pip install pinnwand -e.
+
+    - name: Install clipboard mechanism
+      run: sudo apt-get install xclip
+
+    - name: Run e2e tests
+      run: xvfb-run pytest --e2e test/e2e --html=test/e2e/index.html --self-contained-html
+
+    - name: Publish test results
+      if: always()
+      uses: PavanMudigonda/html-reporter-github-pages@v1.2
+      with:
+        test_results: test/e2e/
+        keep_reports: 20
+        gh_pages: pinnwand_tests
+        subfolder: e2e
