@@ -1,4 +1,4 @@
-database_uri = "sqlite:////tmp/tmpne71olx1"
+database_uri = "sqlite:////tmp/tmpyhxpo3c_"
 
 [ratelimit.read]
 capacity = 200
