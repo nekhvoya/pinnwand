@@ -1,0 +1,111 @@
+[project]
+name = "pinnwand"
+version = "1.6.0"
+description = "Straightforward pastebin software."
+authors = [
+    {name = "Simon de Vlieger", email = "cmdr@supakeen.com"},
+]
+dependencies = [
+    "tornado>=6.3.2",
+    "pygments>=2.15.1",
+    "sqlalchemy>=2.0.15",
+    "click>=8.1.3",
+    "docutils>=0.20.1",
+    "pygments-better-html>=0.1.4",
+    "token-bucket>=0.3.0",
+    "tomli>=2.0.1",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.urls]
+"Homepage" = "https://github.com/supakeen/pinnwand"
+"Repository" = "https://github.com/supakeen/pinnwand"
+"Bug Tracker" = "https://github.com/supakeen/pinnwand/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.3.1",
+    "coverage>=7.2.7",
+    "black>=23.3.0",
+    "pytest-cov>=4.1.0",
+    "pre-commit>=3.3.2",
+    "mypy>=1.3.0",
+    "types-docutils>=0.20.0.1",
+    "isort>=5.12.0",
+    "bandit>=1.7.5",
+    "pip-audit>=2.5.6",
+    "pytest-playwright>=0.3.3",
+    "pyperclip>=1.8.2",
+    "gitpython>=3.1.34",
+    "urllib3>=2.0.7",
+    "pytest-html>=4.1.1"
+]
+[build-system]
+requires = ["pdm-pep517>=1.0"]
+build-backend = "pdm.pep517.api"
+
+[project.scripts]
+pinnwand = 'pinnwand.__main__:main'
+
+[tool.black]
+line-length = 80
+target_version = ["py36"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.eggs
+  | \.mypy_cache
+  | \.tox
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.mypy]
+python_version = "3.7"
+platform = "linux"
+show_column_numbers = true
+follow_imports = "normal"
+ignore_missing_imports = true
+disallow_untyped_calls = true
+warn_return_any = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[tool.pylint]
+extension-pkg-whitelist = ["lxml"]
+ignore = ["CVS"]
+jobs = 1
+persistent = "yes"
+suggestion-mode = "yes"
+unsafe-load-any-extension = "no"
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+        "raw-checker-failed",
+        "bad-inline-option",
+        "locally-disabled",
+        "file-ignored",
+        "suppressed-message",
+        "useless-suppression",
+        "deprecated-pragma",
+        "invalid-name",
+        "line-too-long"
+]
+
+enable = "c-extension-no-member"
+
